@@ -2,7 +2,6 @@
    onlytcm.com
 </h1>
 
-started this website for medicine as software (mas)
+started this website for medicine as code (mac)
 
-## TCM has the most complete medical framework in the world. It should be promoted and generalized to the public.
 
