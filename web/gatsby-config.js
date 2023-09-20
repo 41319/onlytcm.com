@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
-    title: `OnlyTCM,
-    description: `medicine as code`,
+    title: `OnlyTCM 唯医`,
+    description: ``,
     author: `@r-ichard`,
   },
   plugins: [
