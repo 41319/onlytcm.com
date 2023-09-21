@@ -23,7 +23,23 @@ const IndexPage = ({ data }) => {
 
 
   useEffect(() => {
-    const _queried = formulaList?.filter(({ node }) => selected.find(s => s.value === node.name))
+    console.log(selected)
+    const _queried = formulaList?.filter(({ node }) => {
+
+      const needles = [
+        node.name,
+        ...node.tags || []
+      ]
+      if (node.tags.length) {
+
+        console.log(needles)
+      }
+
+
+
+      const found = selected.find(sel => needles.includes(sel?.value))
+      return !!found;
+    })
     setQueriedData(_queried)
   }, [selected])
 
@@ -55,13 +71,14 @@ const IndexPage = ({ data }) => {
 
 
         <ReactTags
-          placeholderText="经方名称"
-          labelText="Select countries"
+          placeholderText="经方名称， 病症， 病名"
+          labelText="Select"
           selected={selected}
           suggestions={suggestions}
           onAdd={onAdd}
           onDelete={onDelete}
-          noOptionsText="No matching countries"
+          noOptionsText="No matchin"
+          allowNew={true}
         />
         <br />
 
@@ -102,6 +119,7 @@ export const query = graphql`
           name
           description
           url
+          tags
         }
       }
     }
