@@ -5,12 +5,27 @@ import Form from 'react-bootstrap/Form';
 import Layout from "../components/layout"
 import { Seo } from "../components/seo"
 import { ReactTags } from 'react-tag-autocomplete'
+import { graphql } from 'gatsby';
+import ListGroup from 'react-bootstrap/ListGroup';
+import { Badge } from 'react-bootstrap'
 
-
-const { useState, useCallback } = React; 
-const IndexPage = () => {
-
+const { useState, useCallback, useEffect } = React;
+const IndexPage = ({ data }) => {
+  const formulaList = data?.allShanhanJson?.edges;
   const [selected, setSelected] = useState([])
+  const [queriedData, setQueriedData] = useState(formulaList)
+  const [searchQuery, setSearchQuery] = useState([])
+  const [suggestions, setSuggestions] = useState([])
+  useEffect(() => {
+    const _suggestions = formulaList?.map(({ node }) => ({ value: node.name, label: node.name }))
+    setSuggestions(_suggestions)
+  }, [])
+
+
+  useEffect(() => {
+    const _queried = formulaList?.filter(({ node }) => selected.find(s => s.value === node.name))
+    setQueriedData(_queried)
+  }, [selected])
 
   const onAdd = useCallback(
     (newTag) => {
@@ -31,29 +46,42 @@ const IndexPage = () => {
   }
   return (
     <Layout>
-      <section className="py-5 text-center container">
+      <section className="py-5 container">
         <div className="row py-lg-5">
           <div className="col-lg-6 col-md-8 mx-auto">
-            <h1 className="fw-light">唯医搜索</h1>
+            <h1 className="fw-light  text-center">唯医搜索</h1>
           </div>
         </div>
-        <div className="row">
-        
-          <ReactTags
-            placeholderText="经方名称"
-            labelText="Select countries"
-            selected={selected}
-            suggestions={[
-              { value: 3, label: 'Bananas' },
-              { value: 4, label: 'Mangos' },
-              { value: 5, label: 'Lemons' },
-              { value: 6, label: 'Apricots', disabled: true },
-            ]}
-            onAdd={onAdd}
-            onDelete={onDelete}
-            noOptionsText="No matching countries"
-          />
-        </div>
+
+
+        <ReactTags
+          placeholderText="经方名称"
+          labelText="Select countries"
+          selected={selected}
+          suggestions={suggestions}
+          onAdd={onAdd}
+          onDelete={onDelete}
+          noOptionsText="No matching countries"
+        />
+        <br />
+
+        <ListGroup>
+
+          {
+            searchQuery && queriedData.map(({ node }) => {
+              return <ListGroup.Item>
+                <div className="">
+                  <div className="fw-bold"> {node.name} </div>
+                  {node.description}
+                </div>
+                {
+                  node?.url && <a target="_blank" href={node?.url}>Watch</a>
+                }
+              </ListGroup.Item>
+            })
+          }
+        </ListGroup>
+
       </section>
     </Layout>
   )
@@ -64,3 +92,18 @@ export default IndexPage
 export const Head = () => (
   <Seo />
 )
+
+export const query = graphql`
+  query MyQuery {
+    allShanhanJson {
+      edges {
+        node {
+          id
+          name
+          description
+          url
+        }
+      }
+    }
+  }
+`;
