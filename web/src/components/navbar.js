@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import { Link } from "gatsby"
 
 const isActive = ({ isCurrent }) => {
-  return isCurrent ? { className: "nav-link active" } : {className: "nav-link"}
+  return isCurrent ? { className: "nav-link active" } : { className: "nav-link" }
 }
 
 const ExactNavLink = props => (
@@ -16,7 +16,7 @@ const Navbar = ({ siteTitle }) => {
       <div className="container-fluid">
         <Link to="/" className="navbar-brand" href="#">{siteTitle}</Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navbar"
-                aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+          aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
 
@@ -27,6 +27,13 @@ const Navbar = ({ siteTitle }) => {
                 to="/"
               >
                 Search
+              </ExactNavLink>
+            </li>
+            <li className="nav-item">
+              <ExactNavLink
+                to="/redirect?path=https%3A%2F%2Fgithub.com%2F41319%2Fonlytcm.com"
+              >
+                github
               </ExactNavLink>
             </li>
           </ul>
