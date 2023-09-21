@@ -23,23 +23,14 @@ const IndexPage = ({ data }) => {
 
 
   useEffect(() => {
-    console.log(selected)
-    const _queried = formulaList?.filter(({ node }) => {
-
+    const _queried = selected.length ? formulaList?.filter(({ node }) => {
       const needles = [
         node.name,
         ...node.tags || []
-      ]
-      if (node.tags.length) {
-
-        console.log(needles)
-      }
-
-
-
+      ] 
       const found = selected.find(sel => needles.includes(sel?.value))
       return !!found;
-    })
+    }) : formulaList
     setQueriedData(_queried)
   }, [selected])
 
@@ -85,7 +76,7 @@ const IndexPage = ({ data }) => {
         <ListGroup>
 
           {
-            searchQuery && queriedData.map(({ node }) => {
+            queriedData.map(({ node }) => {
               return <ListGroup.Item>
                 <div className="">
                   <div className="fw-bold"> {node.name} </div>
