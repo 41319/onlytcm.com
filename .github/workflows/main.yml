@@ -43,3 +43,4 @@ jobs:
         REPO: git@github.com:41319/onlytcm.com.git
         BRANCH: latest
         FOLDER: web/public
+        SSH_PRIVATE_KEY: ${{ secrets.DEPLOY }}
