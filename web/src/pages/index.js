@@ -16,6 +16,9 @@ const IndexPage = ({ data }) => {
   const [queriedData, setQueriedData] = useState(formulaList)
   const [searchQuery, setSearchQuery] = useState([])
   const [suggestions, setSuggestions] = useState([])
+  const [videoNumber, setVideoNumber] = useState(0)
+
+
   useEffect(() => {
     const _suggestions = formulaList?.map(({ node }) => ({ value: node.name, label: node.name }))
     setSuggestions(_suggestions)
@@ -32,6 +35,12 @@ const IndexPage = ({ data }) => {
       return !!found;
     }) : formulaList
     setQueriedData(_queried)
+    setVideoNumber(_queried.reduce((prev, next) => {
+      if(next?.node?.url) {
+        return prev + 1
+      }
+      return prev;
+    }, 0))
   }, [selected])
 
   const onAdd = useCallback(
@@ -76,6 +85,7 @@ const IndexPage = ({ data }) => {
 
         <ListGroup>
           { `${queriedData.length} 答案`}
+          { `${videoNumber} 视频`}
           {
             queriedData.map(({ node }) => {
               return <ListGroup.Item>
@@ -87,7 +97,7 @@ const IndexPage = ({ data }) => {
                   {node.formula}
                 </div>
                 {
-                  node?.url && <a target="_blank" href={node?.url}>Watch</a>
+                  node?.url && <a target="_blank" href={node?.url}>看视频</a>
                 }
               </ListGroup.Item>
             })
@@ -107,7 +117,7 @@ export const Head = () => (
 
 export const query = graphql`
   query MyQuery {
-    allShanhanJson (limit: 500) {
+    allShanhanJson {
       edges {
         node {
           id
