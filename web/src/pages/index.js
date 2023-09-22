@@ -26,9 +26,9 @@ const IndexPage = ({ data }) => {
     const _queried = selected.length ? formulaList?.filter(({ node }) => {
       const needles = [
         node.name,
-        ...node.tags || []
+        node.description
       ] 
-      const found = selected.find(sel => needles.includes(sel?.value))
+      const found = selected.find(sel => needles.find(n => n.includes(sel?.value)))
       return !!found;
     }) : formulaList
     setQueriedData(_queried)
@@ -110,7 +110,6 @@ export const query = graphql`
           name
           description
           url
-          tags
         }
       }
     }
