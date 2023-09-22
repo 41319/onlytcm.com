@@ -62,13 +62,14 @@ const IndexPage = ({ data }) => {
 
 
         <ReactTags
+          react-tag-autocomplete={true}
           placeholderText="经方名称， 病症， 病名"
           labelText="Select"
           selected={selected}
           suggestions={suggestions}
           onAdd={onAdd}
           onDelete={onDelete}
-          noOptionsText="No matchin"
+          noOptionsText=""
           allowNew={true}
         />
         <br />
@@ -81,6 +82,9 @@ const IndexPage = ({ data }) => {
                 <div className="">
                   <div className="fw-bold"> {node.name} </div>
                   {node.description}
+                  <br />
+                  <br />
+                  {node.formula}
                 </div>
                 {
                   node?.url && <a target="_blank" href={node?.url}>Watch</a>
@@ -110,6 +114,7 @@ export const query = graphql`
           name
           description
           url
+          formula
         }
       }
     }
