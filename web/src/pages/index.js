@@ -75,7 +75,10 @@ const IndexPage = ({ data }) => {
         <br />
 
         <ListGroup>
-
+          {
+            formulaList.length
+          }
+          { `${queriedData.length} 答案`}
           {
             queriedData.map(({ node }) => {
               return <ListGroup.Item>
@@ -107,7 +110,7 @@ export const Head = () => (
 
 export const query = graphql`
   query MyQuery {
-    allShanhanJson {
+    allShanhanJson (limit: 500) {
       edges {
         node {
           id
