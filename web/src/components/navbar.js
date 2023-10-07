@@ -2,6 +2,10 @@ import * as React from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
 import { useLocation } from '@reach/router';
+import Table from 'react-bootstrap/Table';
+
+
+
 const { useEffect, useState } = React;
 
 const isActive = ({ isCurrent }) => {
@@ -14,7 +18,7 @@ const ExactNavLink = props => (
 
 const spSubmenu = [
   {
-    to: '/',
+    to: '/flu',
     label: 'Flu, Fever 感冒 发烧 '
   }
 ]
