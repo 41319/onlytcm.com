@@ -16,7 +16,7 @@ import 'reactflow/dist/style.css';
 import { Container, Tooltip, OverlayTrigger, Modal, Button } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form';
 import { SYMPTOMS } from '../shared/symtoms'
-
+import { graphql } from 'gatsby';
 const { useCallback, useState } = React
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
@@ -29,26 +29,36 @@ const minimapStyle = {
   height: 120,
 };
 
-const ContentModal = ({show, handleClose}) => <Modal show={show} onHide={handleClose}>
+const ContentModal = ({ show, handleClose, list }) => <Modal show={show} onHide={handleClose}>
   <Modal.Header closeButton>
-    <Modal.Title>Modal heading</Modal.Title>
+    <Modal.Title>Pharmacy 药房</Modal.Title>
   </Modal.Header>
-  <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
+  <Modal.Body>
+
+    {
+      list.map((ee) => <div><Link to={`/?otid=${ee.node.otid}`}> {ee.node.name} {ee.node.otid} </Link></div>)
+    }
+  </Modal.Body>
   <Modal.Footer>
     <Button variant="secondary" onClick={handleClose}>
       Close
     </Button>
-    <Button variant="primary" onClick={handleClose}>
-      Save Changes
-    </Button>
   </Modal.Footer>
 </Modal>
-const AboutPage = () => {
-  
+const AboutPage = ({ data }) => {
+  const formulaList = data?.allShanhanJson?.edges;
   const [displayModal, setDisplayModal] = useState(false)
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const image = getImage('../../images/gatsby-astronaut.png');
+
+  const getList = () => {
+
+    console.log(formulaList.length)
+    const checklist = ['OT94', 'OT7', 'OT2', 'OT1', 'OT23', 'OT29', 'OT18', 'OT45', 'OT2', 'OT59', 'OT31']
+    return formulaList?.filter(({ node }) => checklist.includes(node.otid))
+  }
+
   const [symptomChecklist, setSymptomChecklist] = useState({
     FEVER: false,
     SWEAT: false,
@@ -68,19 +78,28 @@ const AboutPage = () => {
 
       <div className="d-flex flex-column container my-5  justify-content-center align-items-center">
 
-        <img src="/images/fever-1.jpg" className="img-fluid" 
+        <img src="/images/fever-1.jpg" className="img-fluid"
           onClick={
             () => setDisplayModal(true)
           }
         />
-        <img src="/images/fever-2.jpg" className="img-fluid" />
-        <img src="/images/fever-3.jpg" className="img-fluid" />
-        <img src="/images/chronic_cough.png" className="img-fluid" />
-        <img src="/images/clause.png" className="img-fluid" />
+        <img src="/images/fever-2.jpg" className="img-fluid" onClick={
+          () => setDisplayModal(true)
+        } />
+        <img src="/images/fever-3.jpg" className="img-fluid" onClick={
+          () => setDisplayModal(true)
+        } />
+        <img src="/images/chronic_cough.png" className="img-fluid" onClick={
+          () => setDisplayModal(true)
+        } />
+        <img src="/images/clause.png" className="img-fluid" onClick={
+          () => setDisplayModal(true)
+        } />
       </div>
-      <ContentModal 
-        show={displayModal} 
+      <ContentModal
+        show={displayModal}
         handleClose={() => setDisplayModal(false)}
+        list={getList()}
       />
     </Layout>
   )
@@ -92,3 +111,20 @@ export default AboutPage
 export const Head = () => (
   <Seo title="About Gatsby Bootsrap 5 starter" />
 )
+
+export const query = graphql`
+  query MyQuery {
+    allShanhanJson {
+      edges {
+        node {
+          id
+          name
+          description
+          url
+          formula
+          otid
+        }
+      }
+    }
+  }
+`;

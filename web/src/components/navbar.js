@@ -55,7 +55,7 @@ const Navbar = ({ siteTitle }) => {
               <ExactNavLink
                 to="/"
               >
-                Search 搜索
+                Pharmacy 药房
               </ExactNavLink>
             </li>
             <li className="nav-item">

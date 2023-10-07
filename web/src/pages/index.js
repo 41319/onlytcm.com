@@ -10,33 +10,42 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import { Badge } from 'react-bootstrap'
 
 const { useState, useCallback, useEffect } = React;
-const IndexPage = ({ data }) => {
+const IndexPage = ({ data, location }) => {
   const formulaList = data?.allShanhanJson?.edges;
   const [selected, setSelected] = useState([])
   const [queriedData, setQueriedData] = useState(formulaList)
   const [searchQuery, setSearchQuery] = useState([])
   const [suggestions, setSuggestions] = useState([])
   const [videoNumber, setVideoNumber] = useState(0)
-
+  const params = new URLSearchParams(location.search);
+  const number = params.get("otid");
 
   useEffect(() => {
-    const _suggestions = formulaList?.map(({ node }) => ({ value: node.name, label: node.name }))
+    const _suggestions = formulaList?.map(({ node }) => ({ value: node.otid?.toLowerCase(), label: `${node.name}` }))
     setSuggestions(_suggestions)
   }, [])
 
+  useEffect(() => {
+    const deeplink = suggestions.find(s => s?.value === number)
+    if (deeplink) {
+      setSelected([deeplink])
+    }
+  }, [number, suggestions])
 
   useEffect(() => {
     const _queried = selected.length ? formulaList?.filter(({ node }) => {
       const needles = [
         node.name,
-        node.description
-      ] 
-      const found = selected.find(sel => needles.find(n => n.includes(sel?.value)))
+        node.description,
+
+      ]
+        .map(e => e)
+      const found = selected.find(sel => needles.find(n => n.includes(sel?.label)))
       return !!found;
     }) : formulaList
     setQueriedData(_queried)
     setVideoNumber(_queried.reduce((prev, next) => {
-      if(next?.node?.url) {
+      if (next?.node?.url) {
         return prev + 1
       }
       return prev;
@@ -69,7 +78,6 @@ const IndexPage = ({ data }) => {
           </div>
         </div>
 
-
         <ReactTags
           react-tag-autocomplete={true}
           placeholderText="经方名称， 病症， 病名"
@@ -83,14 +91,42 @@ const IndexPage = ({ data }) => {
         />
         <br />
 
+
+        {
+          number && <>
+            <h3>Exact Search</h3>
+            <ListGroup>
+              {
+                formulaList
+                .filter(({ node }) => node?.otid?.toLowerCase() === number.toLowerCase())
+                .map(({ node }) => {
+                  return <ListGroup.Item>
+                    <div className="">
+                      <div className="fw-bold"> {node.name} {node?.otid}</div>
+                      {node.description}
+                      <br />
+                      <br />
+                      {node.formula}
+                    </div>
+                    {
+                      node?.url && <a target="_blank" href={node?.url}>看视频</a>
+                    }
+                  </ListGroup.Item>
+                })
+              }
+            </ListGroup>
+          </>
+        }
+        <br />
+        <h3>Related Search</h3>
         <ListGroup>
-          { `${queriedData.length} 答案`}
-          { `${videoNumber} 视频`}
+          {`${queriedData.length} 答案`}
+          {`${videoNumber} 视频`}
           {
             queriedData.map(({ node }) => {
               return <ListGroup.Item>
                 <div className="">
-                  <div className="fw-bold"> {node.name} </div>
+                  <div className="fw-bold"> {node.name} {node?.otid}</div>
                   {node.description}
                   <br />
                   <br />
@@ -125,6 +161,7 @@ export const query = graphql`
           description
           url
           formula
+          otid
         }
       }
     }
