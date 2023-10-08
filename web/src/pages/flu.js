@@ -55,7 +55,7 @@ const AboutPage = ({ data }) => {
   const getList = () => {
 
     console.log(formulaList.length)
-    const checklist = ['OT94', 'OT7', 'OT2', 'OT1', 'OT23', 'OT29', 'OT18', 'OT45', 'OT2', 'OT59', 'OT31']
+    const checklist = ['OT94', 'OT7', 'OT2', 'OT1', 'OT23', 'OT29', 'OT18', 'OT45', 'OT2', 'OT59', 'OT31', 'OT22']
     return formulaList?.filter(({ node }) => checklist.includes(node.otid))
   }
 

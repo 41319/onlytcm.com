@@ -26,7 +26,7 @@ const spSubmenu = [
 const dSubmenu = [
   {
     to: '/diagnosis',
-    label: 'Diagnosis 诊所'
+    label: 'Diagnosis 诊断'
   }
 ]
 

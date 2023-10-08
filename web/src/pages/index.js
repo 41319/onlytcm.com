@@ -66,6 +66,35 @@ const IndexPage = ({ data, location }) => {
     [selected]
   )
 
+  const ListView = ({ list, title }) => <>
+
+    <ListGroup>
+      {`${list.length} 答案`}
+      {
+        list
+          .map(({ node }) => {
+            return <ListGroup.Item>
+              <div className="">
+                <div className="fw-bold"> {node.name} {node?.otid}</div>
+                {node.description}
+                <br />
+                <br />
+                {node.formula}
+              </div>
+              {
+                node?.url && <a target="_blank" href={node?.url}>看视频</a>
+              }
+              <div className="text-important">
+              {
+                node?.important
+              }
+              </div>
+            </ListGroup.Item>
+          })
+      }
+    </ListGroup>
+  </>
+
   const renderInput = ({ classNames, inputWidth, ...inputProps }) => {
     return <input className={classNames.input} style={{ width: inputWidth }} {...inputProps} />
   }
@@ -91,55 +120,18 @@ const IndexPage = ({ data, location }) => {
         />
         <br />
 
-
+        <h3> Exact Search </h3>
         {
-          number && <>
-            <h3>Exact Search</h3>
-            <ListGroup>
-              {
-                formulaList
-                .filter(({ node }) => node?.otid?.toLowerCase() === number.toLowerCase())
-                .map(({ node }) => {
-                  return <ListGroup.Item>
-                    <div className="">
-                      <div className="fw-bold"> {node.name} {node?.otid}</div>
-                      {node.description}
-                      <br />
-                      <br />
-                      {node.formula}
-                    </div>
-                    {
-                      node?.url && <a target="_blank" href={node?.url}>看视频</a>
-                    }
-                  </ListGroup.Item>
-                })
-              }
-            </ListGroup>
-          </>
+          number && <ListView
+            title="Exact Search"
+            list={formulaList.filter(({ node }) => node?.otid?.toLowerCase() === number.toLowerCase())}
+          />
         }
         <br />
         <h3>Related Search</h3>
-        <ListGroup>
-          {`${queriedData.length} 答案`}
-          {`${videoNumber} 视频`}
-          {
-            queriedData.map(({ node }) => {
-              return <ListGroup.Item>
-                <div className="">
-                  <div className="fw-bold"> {node.name} {node?.otid}</div>
-                  {node.description}
-                  <br />
-                  <br />
-                  {node.formula}
-                </div>
-                {
-                  node?.url && <a target="_blank" href={node?.url}>看视频</a>
-                }
-              </ListGroup.Item>
-            })
-          }
-        </ListGroup>
-
+        <ListView
+          list={queriedData}
+        />
       </section>
     </Layout>
   )
@@ -162,6 +154,7 @@ export const query = graphql`
           url
           formula
           otid
+          important
         }
       }
     }
