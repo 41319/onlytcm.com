@@ -23,13 +23,28 @@ const spSubmenu = [
   }
 ]
 
+const dSubmenu = [
+  {
+    to: '/diagnosis',
+    label: 'Diagnosis 诊所'
+  }
+]
+
+const Submenu = ({ menu, active, menuName }) => <li class="nav-item dropdown" id="myDropdown">
+  <a class={`nav-link dropdown-toggle ${active ? 'active' : ''}`} href="#" data-bs-toggle="dropdown">  { menuName }  </a>
+  <ul class="dropdown-menu">
+    {
+      menu?.map(sm => <li> <Link className="dropdown-item" to={sm?.to}> {sm.label} </Link></li>)
+    }
+  </ul>
+</li>
+
+const isMenuActive = (path, menu) => {
+  return !!menu.find(e => path.includes(e?.to));
+} 
+
 const Navbar = ({ siteTitle }) => {
   const location = useLocation();
-  const [isSPActive, setIsSPActive] = useState(false)
-  useEffect(() => {
-    const _isActive = !!spSubmenu.find(e => location.pathname.includes(e?.to))
-    setIsSPActive(_isActive)
-  }, [location.pathname])
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-primary">
@@ -43,14 +58,16 @@ const Navbar = ({ siteTitle }) => {
         <div className="collapse navbar-collapse" id="main-navbar">
           <ul className="navbar-nav me-auto mb-2 mb-md-0">
 
-            <li class="nav-item dropdown" id="myDropdown">
-              <a class={`nav-link dropdown-toggle ${isSPActive ? 'active' : ''}`} href="#" data-bs-toggle="dropdown">  Specific Treatment 专治  </a>
-              <ul class="dropdown-menu">
-                {
-                  spSubmenu?.map(sm => <li> <Link className="dropdown-item" to={sm?.to}> { sm.label } </Link></li>)
-                }
-              </ul>
-            </li>
+            <Submenu
+              menuName="Diagnosis 诊所"
+              menu={dSubmenu}
+              active={isMenuActive(location.pathname, dSubmenu)}
+            />
+            <Submenu
+              menuName="Specific Treatment 专治"
+              menu={spSubmenu}
+              active={isMenuActive(location.pathname, spSubmenu)}
+            />
             <li className="nav-item">
               <ExactNavLink
                 to="/"
